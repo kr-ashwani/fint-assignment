@@ -9,14 +9,12 @@ module.exports = async (req, res, next) => {
       _auth_token,
       process.env.ACCESS_TOKEN_SECRET_KEY,
       (err, payload) => {
-        console.log('gello');
         if (err) return res.status(403).json('cookie experied or tampered.');
         if (!payload.emailVerified)
           return res.status(403).json('email is not verified');
         req.userInfo = payload;
       }
     );
-    console.log('hello');
     next();
   } catch (err) {
     const message = handleErrors(err);
