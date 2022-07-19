@@ -1,14 +1,20 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const User = require('../../models/User');
 const handleErrors = require('../utils/handleErrors');
+const sendMail = require('../utils/sendMail');
 
-module.exports = async function (req, res) {
+const forgotPasswordController_post = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!(email && password))
       return res.status(403).json('email or password is missing');
     const user = await User.findOne({ email }).exec();
     if (!user) return res.status(403).json('user is not registered.');
+    if (password.length < 5)
+      return res
+        .status(403)
+        .json('password should contain atleast 6 characters.');
     const hashPass = await bcrypt.hash(password, 10);
     user.password = hashPass;
     await user.save();
@@ -18,4 +24,43 @@ module.exports = async function (req, res) {
     const message = handleErrors(err);
     res.status(403).json({ message });
   }
+};
+
+const forgotPasswordController_get = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(403).json('email is missing');
+
+  const user = await User.findOne({ email }).exec();
+  if (!user) return res.status(403).json('user is not registered');
+
+  const emailVerifyCode = crypto.randomBytes(50).toString('hex');
+  user.emailVerifyCode = emailVerifyCode;
+  await user.save();
+
+  const sendLink = `${process.env.SERVER_ENDPOINT}/verifyemail/?code=${emailVerifyCode}&email=${email}`;
+  const emailHTML = `
+  <strong>This a email regarding password reset of your account created on APP_NAME.</strong>
+  <p>Please click on the link to reset password and add new password. </p>
+  <a href='${sendLink}'>${sendLink}</a>
+  `;
+  await sendMail(email, 'Passowd Reset', '', emailHTML);
+
+  setTimeout(() => {
+    async function deleteVerifyCode() {
+      const userInfo = await User.findOne({ email }).exec();
+      if (!userInfo) return;
+      if (userInfo.emailVerifyCode !== emailVerifyCode) return;
+      userInfo.emailVerifyCode = '';
+      await userInfo.save();
+    }
+    deleteVerifyCode();
+  }, 1 * 60 * 1000);
+
+  res.status(200).json('Please check your email for password reset link.');
+};
+
+module.exports = {
+  forgotPasswordController_post,
+  forgotPasswordController_get,
 };

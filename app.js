@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const authRoutes = require('./routes/authRoutes/authRoutes');
+const authenticateUser = require('./midddleware/authenticateUser/authenticateUser');
 
 const app = express();
 const PORT = process.env.PORT || 3300;
@@ -25,5 +26,10 @@ app.use(
 );
 
 app.use(authRoutes);
+
+app.get('/', authenticateUser, (req, res) => {
+  console.log(req.user);
+  res.send('ok');
+});
 
 app.listen(PORT, () => console.log(`server running on ${PORT}`));

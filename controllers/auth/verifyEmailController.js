@@ -10,9 +10,9 @@ module.exports = async function (req, res) {
     if (!user) throw new Error('user is not registered');
 
     if (!user.emailVerifyCode)
-      return req.status(403).json('link cannot be used more than once.');
+      return res.status(403).json('link cannot be used more than once.');
     if (user.emailVerifyCode !== code)
-      return req.status(403).json('link is tampered.');
+      return res.status(403).json('link is tampered.');
 
     const payloadData = {
       name: user.name,

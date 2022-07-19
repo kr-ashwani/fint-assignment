@@ -4,13 +4,18 @@ const handleErrors = require('../utils/handleErrors');
 const User = require('../../models/User');
 const sendMail = require('../utils/sendMail');
 
-async function signup_post(req, res) {
+module.exports = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const photoUrl = 'https://avatars.dicebear.com/api/micah/random.svg';
 
     if (!(name && email && password))
       return res.status(400).json('name, email or password is missing ');
+
+    if (password.length < 5)
+      return res
+        .status(403)
+        .json('password should contain atleast 6 characters.');
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const emailVerifyCode = crypto.randomBytes(50).toString('hex');
@@ -38,21 +43,19 @@ async function signup_post(req, res) {
         if (user.emailVerified) return;
         await User.findOneAndDelete({ email });
         console.log(
-          `Account of user ${email} has been deleted because user failed to verify email.`
+          `Account of user ${email} has been deleted because user failed to verify the email.`
         );
       }
       deleteUnverifiedUser();
-    }, 5 * 60 * 1000);
+    }, 1 * 60 * 1000);
 
     res
       .status(200)
       .json(
-        'Please check your mail and click on the link to verify your Account within 5 minutes.'
+        'Please check your mail and click on the link to verify your Account within 1 minutes.'
       );
   } catch (err) {
     const message = handleErrors(err);
     res.status(403).json({ message });
   }
-}
-
-module.exports = { signup_post };
+};
