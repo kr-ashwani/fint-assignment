@@ -13,6 +13,8 @@ module.exports = async function (req, res) {
       return res.status(403).json('link cannot be used more than once.');
     if (user.emailVerifyCode !== code)
       return res.status(403).json('link is tampered.');
+    if (!user.emailVerifyType === 'signup')
+      return res.status(403).json('link is not compatible.');
 
     const payloadData = {
       name: user.name,
@@ -23,6 +25,7 @@ module.exports = async function (req, res) {
 
     user.emailVerified = true;
     user.emailVerifyCode = '';
+    user.emailVerifyType = '';
     await user.save();
     res.cookie('_auth_token', accessToken, {
       httpOnly: true,

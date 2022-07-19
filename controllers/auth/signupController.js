@@ -26,6 +26,7 @@ module.exports = async (req, res) => {
       photoUrl,
       emailVerified: false,
       emailVerifyCode,
+      emailVerifyType: 'signup',
     });
 
     const sendLink = `${process.env.SERVER_ENDPOINT}/verifyemail/?code=${emailVerifyCode}&email=${email}`;
@@ -47,12 +48,12 @@ module.exports = async (req, res) => {
         );
       }
       deleteUnverifiedUser();
-    }, 1 * 60 * 1000);
+    }, 2 * 60 * 1000);
 
     res
       .status(200)
       .json(
-        'Please check your mail and click on the link to verify your Account within 1 minutes.'
+        'Please check your mail and click on the link to verify your Account within 2 minutes.'
       );
   } catch (err) {
     const message = handleErrors(err);

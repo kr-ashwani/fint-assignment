@@ -35,6 +35,7 @@ const UserSchema = new mongoose.Schema(
       required: [true, 'enter user photo Url'],
     },
     emailVerifyCode: String,
+    emailVerifyType: String,
   },
   schemaOptions
 );

@@ -27,12 +27,13 @@ const uploadFileS3 = async (req, res, next) => {
   const uploadSingle = upload(process.env.S3_BUCKET_NAME).single(
     'image-upload'
   );
-  // if (!req.file) return next();
+
   uploadSingle(req, res, (err) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ success: false, message: err.message });
     }
+    if (!req.file) return next();
     req.imageURL = req.file.location;
     next();
   });
