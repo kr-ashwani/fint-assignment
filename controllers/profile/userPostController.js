@@ -25,6 +25,9 @@ module.exports = async (req, res) => {
         .status(400)
         .json(`You need to follow '${username}' to view his post.`);
 
+    const { page } = req.query;
+    const skips = page > 0 ? (page - 1) * 5 : 0;
+
     const posts = await Post.find(
       { userID: user._id },
       {
@@ -32,10 +35,12 @@ module.exports = async (req, res) => {
         userID: 0,
         __v: 0,
       }
-    ).exec();
+    )
+      .skip(skips)
+      .limit(5)
+      .exec();
 
-    const { _id, ...userInfo } = user.toObject();
-    res.status(200).json({ userInfo, posts });
+    res.status(200).json({ posts });
   } catch (err) {
     const message = handleErrors(err);
     res.status(400).json({ message });
