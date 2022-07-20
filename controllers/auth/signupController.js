@@ -9,8 +9,10 @@ module.exports = async (req, res) => {
     const { name, email, password, username } = req.body;
     const photoUrl = 'https://avatars.dicebear.com/api/micah/random.svg';
 
-    if (!(name && email && password))
-      return res.status(400).json('name, email or password is missing ');
+    if (!(name && email && password && username))
+      return res
+        .status(400)
+        .json('name, email or password or username is missing ');
 
     if (password.length < 6)
       return res

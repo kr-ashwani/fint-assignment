@@ -1,3 +1,4 @@
+const Post = require('../../models/Post');
 const User = require('../../models/User');
 const handleErrors = require('../utils/handleErrors');
 
@@ -25,7 +26,22 @@ module.exports = async (req, res) => {
 
       res.status(200).json({ usersArr });
     } else {
-      res.send('Hello');
+      const user = await User.findOne({ email: req.userInfo.email }).exec();
+      if (!user) return res.status(403).json('user is not registered.');
+      const followersAndUserItself = [...user.following, user._id];
+      const posts = await Post.find(
+        {
+          userID: { $in: followersAndUserItself },
+        },
+        {
+          _id: 0,
+          __v: 0,
+        }
+      )
+        .sort({ createdAt: -1 })
+        .exec();
+
+      res.status(200).json({ posts });
     }
   } catch (err) {
     const message = handleErrors(err);
