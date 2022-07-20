@@ -6,6 +6,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes/authRoutes');
 const authenticateUser = require('./midddleware/authenticateUser/authenticateUser');
 const profileUpdateRoutes = require('./routes/profile/profileUpdateRoutes');
+const postRoutes = require('./routes/post/postRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3300;
@@ -24,10 +25,10 @@ app.use(cors({}));
 
 app.use(authRoutes);
 
+//  authenticates user and populates userInfo property in req
 app.use(authenticateUser);
-app.get('/', (req, res) => {
-  res.send('Hello');
-});
+
 app.use(profileUpdateRoutes);
+app.use(postRoutes);
 
 app.listen(PORT, () => console.log(`server running on ${PORT}`));

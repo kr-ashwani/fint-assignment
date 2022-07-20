@@ -34,6 +34,7 @@ const uploadFileS3 = async (req, res, next) => {
       return res.status(400).json({ success: false, message: err.message });
     }
     if (!req.file) return next();
+    //  populating imageURL property on req
     req.imageURL = req.file.location;
     next();
   });

@@ -29,7 +29,7 @@ function handleErrors(err) {
     });
   }
 
-  // validation errors
+  //  user validation errors
   else if (err.message.includes('user validation failed')) {
     Object.values(err.errors).forEach(({ properties }) => {
       message += `${properties.message}. `;
@@ -37,6 +37,13 @@ function handleErrors(err) {
     });
   }
 
+  //  post validation errors
+  else if (err.message.includes('post validation failed')) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      message += `${properties.message}. `;
+      return null;
+    });
+  }
   //  else
   else message += 'something went wrong.';
 

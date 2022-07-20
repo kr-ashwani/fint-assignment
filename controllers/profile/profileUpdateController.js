@@ -4,10 +4,10 @@ const handleErrors = require('../utils/handleErrors');
 module.exports = async (req, res) => {
   try {
     const { name, username } = req.body;
-    if (!(name || req.imageURL))
+    if (!(name || username || req.imageURL))
       return res
-        .status(200)
-        .json('name or file should be provided to update profile.');
+        .status(400)
+        .json('name or file or username should be provided to update profile.');
     const user = await User.findOne({ email: req.userInfo.email }).exec();
 
     if (!user) return res.status(403).json('user is not registered.');
@@ -20,7 +20,9 @@ module.exports = async (req, res) => {
           .status(403)
           .json(
             `You can change username after ${Math.ceil(
-              (Date.now() - user.usernameChangedTimestamp) /
+              (user.usernameChangedTimestamp +
+                60 * 24 * 60 * 60 * 1000 -
+                Date.now()) /
                 (24 * 60 * 60 * 1000)
             )} days`
           );

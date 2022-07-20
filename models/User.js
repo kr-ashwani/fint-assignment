@@ -14,11 +14,13 @@ const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      trim: true,
       required: [true, 'enter name'],
     },
     email: {
       type: String,
       lowercase: true,
+      trim: true,
       unique: [true, 'This email is already registered'],
       validate: [isEmail, 'Please enter a valid email'],
       required: [true, 'enter email address'],
@@ -26,6 +28,7 @@ const UserSchema = new mongoose.Schema(
     username: {
       type: String,
       lowercase: true,
+      trim: true,
       unique: [true, 'This username already exists.'],
       validate: [isUsername, 'Please enter a valid username.'],
       required: [true, 'enter username'],
@@ -46,11 +49,11 @@ const UserSchema = new mongoose.Schema(
     emailVerifyCode: String,
     emailVerifyType: String,
     following: {
-      type: Array,
+      type: [String],
       default: [],
     },
     followers: {
-      type: Array,
+      type: [String],
       default: [],
     },
     usernameChangedTimestamp: {
