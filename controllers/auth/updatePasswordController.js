@@ -12,7 +12,7 @@ module.exports = async function (req, res) {
     const passMatch = await bcrypt.compare(password, user.password);
     if (!passMatch) return res.status(403).json('password did not match.');
 
-    if (newPassword.length < 5)
+    if (newPassword.length < 6)
       return res
         .status(403)
         .json('password should contain atleast 6 characters.');

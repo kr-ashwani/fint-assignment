@@ -20,7 +20,7 @@ const forgotPasswordController_post = async (req, res) => {
     if (!user.emailVerifyType === 'restPassword')
       return res.status(403).json('link is not compatible.');
 
-    if (newPassword.length < 5)
+    if (newPassword.length < 6)
       return res
         .status(403)
         .json('newPassword should contain atleast 6 characters.');

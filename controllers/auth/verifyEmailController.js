@@ -19,6 +19,7 @@ module.exports = async function (req, res) {
     const payloadData = {
       name: user.name,
       email,
+      username: user.username,
       emailVerified: true,
     };
     const accessToken = createAccessToken(payloadData);

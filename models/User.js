@@ -7,6 +7,8 @@ const schemaOptions = {
     updatedAt: 'lastLoginAt',
   },
 };
+const isUsername = (username) =>
+  Boolean(username.match(/^[a-z0-9]([._-](?![._-])|[a-z0-9]){5,28}[a-z0-9]$/));
 
 const UserSchema = new mongoose.Schema(
   {
@@ -20,6 +22,13 @@ const UserSchema = new mongoose.Schema(
       unique: [true, 'This email is already registered'],
       validate: [isEmail, 'Please enter a valid email'],
       required: [true, 'enter email address'],
+    },
+    username: {
+      type: String,
+      lowercase: true,
+      unique: [true, 'This username already exists.'],
+      validate: [isUsername, 'Please enter a valid username.'],
+      required: [true, 'enter username'],
     },
     emailVerified: {
       type: Boolean,
@@ -36,6 +45,18 @@ const UserSchema = new mongoose.Schema(
     },
     emailVerifyCode: String,
     emailVerifyType: String,
+    following: {
+      type: Array,
+      default: [],
+    },
+    followers: {
+      type: Array,
+      default: [],
+    },
+    usernameChangedTimestamp: {
+      type: Number,
+      default: () => Date.now(),
+    },
   },
   schemaOptions
 );

@@ -6,13 +6,13 @@ const sendMail = require('../utils/sendMail');
 
 module.exports = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, username } = req.body;
     const photoUrl = 'https://avatars.dicebear.com/api/micah/random.svg';
 
     if (!(name && email && password))
       return res.status(400).json('name, email or password is missing ');
 
-    if (password.length < 5)
+    if (password.length < 6)
       return res
         .status(403)
         .json('password should contain atleast 6 characters.');
@@ -22,6 +22,7 @@ module.exports = async (req, res) => {
     await User.create({
       name,
       email,
+      username,
       password: hashedPassword,
       photoUrl,
       emailVerified: false,

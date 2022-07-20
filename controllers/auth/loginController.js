@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
     const { email, password } = req.body;
 
     if (!(email && password))
-      return res.status(400).json('name, email or password is missing ');
+      return res.status(400).json(' email or password is missing ');
 
     const user = await User.findOne({ email }).exec();
     if (!user) return res.status(403).json('user is not registered.');
@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
     const payloadData = {
       name: user.name,
       email,
+      username: user.username,
       emailVerified: user.emailVerified,
     };
     const accessToken = createAccessToken(payloadData);
@@ -29,7 +30,7 @@ module.exports = async (req, res) => {
       sameSite: 'lax',
     });
 
-    res.status(200).json('logged in in successfully and jwt cookie is set.');
+    res.status(200).json('logged in successfully and jwt is sent as cookie.');
   } catch (err) {
     const message = handleErrors(err);
     res.status(403).json({ message });
