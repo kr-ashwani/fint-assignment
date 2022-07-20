@@ -20,6 +20,10 @@ function handleErrors(err) {
     message += 'Password is incorrect. ';
   }
 
+  // objectId didnot match
+  if (err.message.includes('Cast to ObjectId')) {
+    message += 'No resource is registered with this id.';
+  }
   // duplicate email error
   else if (err.code === 11000) {
     Object.entries(err?.keyValue).forEach((elem) => {

@@ -26,6 +26,8 @@ module.exports = async (req, res) => {
 
       res.status(200).json({ usersArr });
     } else {
+      const { page } = req.query;
+      const skips = page > 0 ? (page - 1) * 5 : 0;
       const user = await User.findOne({ email: req.userInfo.email }).exec();
       if (!user) return res.status(403).json('user is not registered.');
       const followersAndUserItself = [...user.following, user._id];
@@ -39,6 +41,8 @@ module.exports = async (req, res) => {
         }
       )
         .sort({ createdAt: -1 })
+        .skip(skips)
+        .limit(5)
         .exec();
 
       res.status(200).json({ posts });
