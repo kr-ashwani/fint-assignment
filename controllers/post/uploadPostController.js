@@ -7,6 +7,7 @@ module.exports = async (req, res) => {
     const user = await User.findOne({ email: req.userInfo.email }).exec();
     if (!user) return res.status(403).json('user is not registered.');
     const { description } = req.body;
+
     await Post.create({
       postImage: req.imageURL,
       postDescription: description || '',

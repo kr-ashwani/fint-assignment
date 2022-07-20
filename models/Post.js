@@ -15,7 +15,7 @@ const PostSchema = new mongoose.Schema({
     required: [true, 'user id missing.'],
   },
   likes: {
-    type: [mongoose.ObjectId],
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
 });

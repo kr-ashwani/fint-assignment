@@ -49,11 +49,11 @@ const UserSchema = new mongoose.Schema(
     emailVerifyCode: String,
     emailVerifyType: String,
     following: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
     followers: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
     usernameChangedTimestamp: {

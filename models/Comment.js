@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const CommentSchema = new mongoose.Schema({
   postID: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: [true, 'post id is missing.'],
   },
   userID: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: [true, 'user id is missing'],
   },
   comment: {
@@ -15,11 +15,11 @@ const CommentSchema = new mongoose.Schema({
     required: [true, 'comment is missing.'],
   },
   repliedCommentID: {
-    type: [String],
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
   likes: {
-    type: [String],
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
 });
