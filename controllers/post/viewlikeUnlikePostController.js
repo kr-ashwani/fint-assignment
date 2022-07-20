@@ -1,18 +1,11 @@
 const Post = require('../../models/Post');
 const User = require('../../models/User');
 const handleErrors = require('../utils/handleErrors');
+const includesObjectId = require('../utils/includesObjectId');
 
 const viewPostController = async (req, res) => {
   try {
-    const { postid } = req.params;
-    if (!postid) return res.status(400).json('postid is missing.');
-
-    const post = await Post.findOne(
-      { postID: postid },
-      { _id: 0, __v: 0 }
-    ).exec();
-    if (!post)
-      return res.status(400).json('There is no post with this postid.');
+    const { _id, __v, ...post } = req.post;
 
     res.status(200).json({ post });
   } catch (err) {
@@ -23,22 +16,14 @@ const viewPostController = async (req, res) => {
 
 const likePostController = async (req, res) => {
   try {
-    const { postid } = req.params;
-    if (!postid) return res.status(400).json('postid is missing.');
-
     const user = await User.findOne({ email: req.userInfo.email }).exec();
-
     if (!user) return res.status(403).json('user is not registered.');
 
-    const post = await Post.findOne({ _id: postid }, { _id: 0, __v: 0 }).exec();
-    if (!post)
-      return res.status(400).json('There is no post with this postid.');
-
-    if (post.likes.includes(user._id))
+    if (includesObjectId(req.post.likes, user._id))
       return res.status(400).json('You have already liked the post.');
 
     await Post.findOneAndUpdate(
-      { _id: postid },
+      { _id: req.post._id },
       { $push: { likes: user._id } }
     ).exec();
 
@@ -51,22 +36,15 @@ const likePostController = async (req, res) => {
 
 const unLikePostController = async (req, res) => {
   try {
-    const { postid } = req.params;
-    if (!postid) return res.status(400).json('postid is missing.');
-
     const user = await User.findOne({ email: req.userInfo.email }).exec();
 
     if (!user) return res.status(403).json('user is not registered.');
 
-    const post = await Post.findOne({ _id: postid }).exec();
-    if (!post)
-      return res.status(400).json('There is no post with this postid.');
-
-    if (!post.likes.includes(user._id))
+    if (!includesObjectId(req.post.likes, user._id))
       return res.status(400).json('You have not liked the post.');
 
     await Post.findOneAndUpdate(
-      { postID: postid },
+      { _id: req.post._id },
       { $pull: { likes: user._id } },
       { new: true }
     );
