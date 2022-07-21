@@ -22,7 +22,7 @@ function handleErrors(err) {
 
   // objectId didnot match
   if (err.message.includes('Cast to ObjectId')) {
-    message += 'No resource is registered with this id.';
+    message += 'id is invalid.';
   }
   // duplicate email error
   else if (err.code === 11000) {

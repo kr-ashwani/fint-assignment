@@ -13,7 +13,7 @@ const {
   unLikePostController,
 } = require('../../controllers/post/viewlikeUnlikePostController');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get('/', viewPostController);
 router.post('/like', likePostController);
