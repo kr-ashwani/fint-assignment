@@ -7,7 +7,7 @@ const viewRepliedComment = async (req, res) => {
     const comment = await Comment.findOne({ _id: commentid }).exec();
     const repliedComments = [];
 
-    comment.repliedCommentID.forEach(async (elem) => {
+    const commentsPromise = comment.repliedCommentID.map(async (elem) => {
       const com = await Comment.findOne(
         { _id: elem },
         {
@@ -20,8 +20,9 @@ const viewRepliedComment = async (req, res) => {
       repliedComments.push(com);
     });
 
-    await Promise.all(repliedComments);
+    await Promise.all(commentsPromise);
 
+    console.log(repliedComments);
     res.status(200).json({ repliedComments });
   } catch (err) {
     const message = handleErrors(err);
