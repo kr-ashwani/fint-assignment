@@ -20,6 +20,12 @@ module.exports = async (req, res) => {
         .json('password should contain atleast 6 characters.');
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const checkUser = await User.findOne({ email }).exec();
+    if (checkUser)
+      return res
+        .status(400)
+        .json('you have an existing account.Try logging in.');
+
     const emailVerifyCode = crypto.randomBytes(50).toString('hex');
     await User.create({
       name,
