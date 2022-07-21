@@ -38,6 +38,7 @@ const replyToComment = async (req, res) => {
 
     const repliedComment = await Comment.create({
       postID: postid,
+      userID: req.userInfo._id,
       commentID: commentid,
       comment,
       repliedComment: true,
