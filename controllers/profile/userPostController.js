@@ -18,9 +18,8 @@ module.exports = async (req, res) => {
     ).exec();
     if (!user) return res.status(403).json('user is not registered.');
 
-    const selfUser = await User.findOne({ email: req.userInfo.email }).exec();
-    selfUser.following.push(selfUser._id);
-    if (!includesObjectId(selfUser.following, user._id))
+    req.userInfo.following.push(req.userInfo._id);
+    if (!includesObjectId(req.userInfo.following, user._id))
       return res
         .status(400)
         .json(`You need to follow '${username}' to view his post.`);

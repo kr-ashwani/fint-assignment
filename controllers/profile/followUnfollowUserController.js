@@ -6,15 +6,13 @@ const followUserController = async (req, res) => {
   try {
     const { username } = req.params;
     const user = await User.findOne({ username }).exec();
-    const selfUser = await User.findOne({ email: req.userInfo.email }).exec();
 
-    if (!(user && selfUser))
-      return res.status(403).json('user is not registered.');
+    if (!user) return res.status(403).json('user is not registered.');
 
-    if (user.email === selfUser.email)
+    if (user.email === req.userInfo.email)
       return res.status(403).json('You can follow others but not yourselves.');
 
-    if (includesObjectId(selfUser.following, user._id))
+    if (includesObjectId(req.userInfo.following, user._id))
       return res.status(403).json(`You already follow ${username}.`);
 
     await User.findOneAndUpdate(
@@ -24,7 +22,7 @@ const followUserController = async (req, res) => {
 
     await User.findOneAndUpdate(
       { username },
-      { $push: { followers: selfUser._id } }
+      { $push: { followers: req.userInfo._id } }
     ).exec();
 
     return res.status(200).json(`You followed ${username}.`);
@@ -38,15 +36,13 @@ const unFollowUserController = async (req, res) => {
   try {
     const { username } = req.params;
     const user = await User.findOne({ username }).exec();
-    const selfUser = await User.findOne({ email: req.userInfo.email }).exec();
 
-    if (!(user && selfUser))
-      return res.status(403).json('user is not registered.');
+    if (!user) return res.status(403).json('user is not registered.');
 
-    if (user.email === selfUser.email)
+    if (user.email === req.userInfo.email)
       return res.status(403).json('You can follow or unfollow yourselves.');
 
-    if (!includesObjectId(selfUser.following, user._id))
+    if (!includesObjectId(req.userInfo.following, user._id))
       return res.status(403).json(`You donot follow ${username}.`);
 
     await User.findOneAndUpdate(
@@ -56,7 +52,7 @@ const unFollowUserController = async (req, res) => {
 
     await User.findOneAndUpdate(
       { username },
-      { $pull: { followers: selfUser._id } }
+      { $pull: { followers: req.userInfo._id } }
     ).exec();
 
     return res.status(200).json(`You unfollowed ${username}.`);

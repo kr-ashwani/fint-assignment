@@ -4,7 +4,6 @@ const handleErrors = require('../utils/handleErrors');
 module.exports = async (req, res) => {
   try {
     const { username } = req.params;
-    console.log(username);
     const user = await User.findOne(
       { username },
       {
