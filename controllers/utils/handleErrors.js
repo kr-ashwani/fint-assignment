@@ -1,5 +1,5 @@
 function handleErrors(err) {
-  console.log('errorhandle: ', err);
+  console.log('errorhandle: ', err.message);
   let message = '';
 
   // incorrect email

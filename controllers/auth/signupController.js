@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
 
     const sendLink = `${process.env.SERVER_ENDPOINT}/verifyemail/?code=${emailVerifyCode}&email=${email}`;
     const emailHTML = `
-    <strong>This a email regarding email verification of your account created on APP_NAME.</strong>
+    <strong>This email is regarding email verification of your account created on APP_NAME.</strong>
     <p>Please click on the link to verify your account </p>
     <a href='${sendLink}'>${sendLink}</a>
     `;

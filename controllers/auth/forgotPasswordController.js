@@ -52,7 +52,7 @@ const forgotPasswordController_get = async (req, res) => {
 
   const sendLink = `${process.env.SERVER_ENDPOINT}/forgotpassword/?code=${emailVerifyCode}&email=${email}`;
   const emailHTML = `
-  <strong>This a email regarding password reset of your account created on APP_NAME.</strong>
+  <strong>This email is regarding password reset of your account created on APP_NAME.</strong>
   <p>Please click on the link to reset password and add new password. </p>
   <a href='${sendLink}'>${sendLink}</a>
   `;

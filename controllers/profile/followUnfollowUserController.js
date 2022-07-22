@@ -40,7 +40,7 @@ const unFollowUserController = async (req, res) => {
     if (!user) return res.status(403).json('user is not registered.');
 
     if (user.email === req.userInfo.email)
-      return res.status(403).json('You can follow or unfollow yourselves.');
+      return res.status(403).json('You cannot follow or unfollow yourselves.');
 
     if (!includesObjectId(req.userInfo.following, user._id))
       return res.status(403).json(`You donot follow ${username}.`);

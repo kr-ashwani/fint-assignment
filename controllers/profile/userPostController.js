@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
         __v: 0,
       }
     )
+      .sort({ createdAt: -1 })
       .skip(skips)
       .limit(5)
       .exec();
