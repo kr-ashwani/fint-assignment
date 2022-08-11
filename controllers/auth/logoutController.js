@@ -4,5 +4,5 @@ module.exports = async function (req, res) {
     maxAge: process.env.REFRESH_TOKEN_EXP_TIME,
     sameSite: 'lax',
   });
-  res.status(200).json('user is logged out successfully.');
+  res.status(200).json('user logged out successfully.');
 };
