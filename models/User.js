@@ -8,7 +8,7 @@ const schemaOptions = {
   },
 };
 const isUsername = (username) =>
-  Boolean(username.match(/^[a-z0-9]([._-](?![._-])|[a-z0-9]){5,28}[a-z0-9]$/));
+  Boolean(username.match(/^[a-z0-9]([._-](?![._-])|[a-z0-9]){2,28}[a-z0-9]$/));
 
 const UserSchema = new mongoose.Schema(
   {
