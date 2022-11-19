@@ -36,7 +36,8 @@ const sendMail = async (email, subject, text, html) => {
       html,
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
+    throw Error('failed to send mail');
   }
 };
 

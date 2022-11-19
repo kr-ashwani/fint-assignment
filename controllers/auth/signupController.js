@@ -27,6 +27,15 @@ module.exports = async (req, res) => {
         .json('you have an existing account.Try logging in.');
 
     const emailVerifyCode = crypto.randomBytes(50).toString('hex');
+
+    const sendLink = `${process.env.SERVER_ENDPOINT}/verifyemail/?code=${emailVerifyCode}&email=${email}`;
+    const emailHTML = `
+    <strong>This email is regarding email verification of your account created on APP_NAME.</strong>
+    <p>Please click on the link to verify your account </p>
+    <a href='${sendLink}'>${sendLink}</a>
+    `;
+    await sendMail(email, 'Verify account', '', emailHTML);
+
     await User.create({
       name,
       email,
@@ -37,24 +46,19 @@ module.exports = async (req, res) => {
       emailVerifyCode,
       emailVerifyType: 'signup',
     });
-
-    const sendLink = `${process.env.SERVER_ENDPOINT}/verifyemail/?code=${emailVerifyCode}&email=${email}`;
-    const emailHTML = `
-    <strong>This email is regarding email verification of your account created on APP_NAME.</strong>
-    <p>Please click on the link to verify your account </p>
-    <a href='${sendLink}'>${sendLink}</a>
-    `;
-    await sendMail(email, 'Verify account', '', emailHTML);
-
     setTimeout(() => {
       async function deleteUnverifiedUser() {
-        const user = await User.findOne({ email }).exec();
-        if (!user) return;
-        if (user.emailVerified) return;
-        await User.findOneAndDelete({ email });
-        console.log(
-          `Account of user ${email} has been deleted because user failed to verify the email.`
-        );
+        try {
+          const user = await User.findOne({ email }).exec();
+          if (!user) return;
+          if (user.emailVerified) return;
+          await User.findOneAndDelete({ email });
+          console.log(
+            `Account of user ${email} has been deleted because user failed to verify the email.`
+          );
+        } catch (err) {
+          console.log(err);
+        }
       }
       deleteUnverifiedUser();
     }, 2 * 60 * 1000);

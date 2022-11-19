@@ -11,7 +11,7 @@ const usernameRoutes = require('./routes/usernameRoutes/index');
 const postViewAuthenticate = require('./midddleware/postViewAuthenticate/postViewAuthenticate');
 
 const app = express();
-const PORT = process.env.PORT || 3300;
+const PORT = process.env.PORT || 3301;
 
 mongoose
   .connect(process.env.MONGODB_URI)
